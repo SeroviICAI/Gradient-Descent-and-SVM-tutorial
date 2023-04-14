@@ -166,7 +166,7 @@ $$
     b = b - learning\_rate * \frac{dL}{db}
 \end{cases}
 $$
-donde $\dv{L}{w}$ y $\dv{L}{b}$ son las derivadas de la función de pérdida respecto a $w$ y $b$, respectivamente.
+donde $\frac{dL}{dw}$ y $\frac{dL}{db}$ son las derivadas de la función de pérdida respecto a $w$ y $b$, respectivamente.
 
 Calculamos la función de pérdida MSE en cada paso para ver cómo evoluciona a medida que actualizamos los parámetros. Elegimos parar cuando la función de pérdida se estabiliza y deja de disminuir significativamente.
 
