@@ -318,13 +318,13 @@ En este código, consideramos que la función de pérdida se estabiliza, cuando 
 
 
 ```python
-abs(w - wgd), abs(b - bgd)
+abs(w_ - wgd), abs(b_ - bgd)
 ```
 
 
 
 
-    (array([Abs(w - 2.64327501381065)], dtype=object), Abs(b - 5.16536026591225))
+    (array([0.00013431]), 0.0010174098931781117)
 
 
 
