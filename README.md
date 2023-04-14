@@ -1626,15 +1626,15 @@ $$
 \end{cases}
 $$
 
-Otro interés a tener en cuenta es que nuestro hiperplano separase los ejemplos positivos y negativos con el mayor margen posible. ¿Por qué? Un mayor margen contribuyen a una mejor generalización para clasificar nuevos ejemplos. El margen viene dado por $\frac{2}{\lVertw\rVert}$, donde $\lVertw\rVert$ es la norma del vector $w$. Si tenemos en cuenta la norma euclideana, entonces $\lVertw\rVert = \sqrt{\sum_{j=1}^{D}(w^{(j)})^{2}}$.
+Otro interés a tener en cuenta es que nuestro hiperplano separase los ejemplos positivos y negativos con el mayor margen posible. ¿Por qué? Un mayor margen contribuyen a una mejor generalización para clasificar nuevos ejemplos. El margen viene dado por $\frac{2}{\lVert w\rVert}$, donde $\lVert w\rVert$ es la norma del vector $w$. Si tenemos en cuenta la norma euclideana, entonces $\lVert w\rVert = \sqrt{\sum_{j=1}^{D}(w^{(j)})^{2}}$.
 
 <p align="center">
     <!-- Ejemplo de modelo SVM en un espacio bidimensional -->
     <img src="images/image1.png">
 </p>
 
-Para **maximizar el margen**, hay, por tanto, que **minimizar la norma $\lVertw\rVert$** obteniendo el siguiente criterio de optimización:
-$$\min{\frac{1}{2}\lVertw\rVert^{2} \text{ t.q. } y_{i}(wx_{i} - b) \ge 1}$$
+Para **maximizar el margen**, hay, por tanto, que **minimizar la norma $\lVert w\rVert$** obteniendo el siguiente criterio de optimización:
+$$\min{\frac{1}{2}\lVert w\rVert^{2} \text{ t.q. } y_{i}(wx_{i} - b) \ge 1}$$
 
 A este hiperplano que mejor separa las clases (mayor margen) en un conjunto de datos se le denomina **Hiperplano de Margen Máximo**.
 
@@ -1853,7 +1853,7 @@ Ya mencionamos que para lidiar con el ruido nuestro objetivo era **penalizar a a
 $$\max{(0, 1-y_{i}(wx_{i}-b))}$$
 Nótese que cuando las condiciones $A$ y $B$ se cumplan entonces la función valdrá 0, en caso contrario esta será proporcional a la distancia del punto con la frontera.
 
-Por tanto nuestra nueva función de cose es: $C\lVertw\rVert^{2}+\frac{1}{N}\sum_{i=1}^{N}\max{(0, 1-y_{i}(wx_{i}-b))}$,
+Por tanto nuestra nueva función de cose es: $C\lVert w\rVert^{2}+\frac{1}{N}\sum_{i=1}^{N}\max{(0, 1-y_{i}(wx_{i}-b))}$,
 donde **$C$ es un hiperparámetro que se obtiene mediante cross-validation**.
 
 $C$ determina la compensación entre:
