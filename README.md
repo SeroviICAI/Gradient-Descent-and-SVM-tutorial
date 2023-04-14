@@ -158,13 +158,12 @@ plt.show()
 ### 1.2. Cuesta abajo:
 Ahora llega el turno al **descenso gradiente**. En general, para hacer descenso gradiente se comienza con un valor simple de los parámetros como ansatz inicial y se actualiza este progresivamente. Hagámoslo así: dale a ambos parámetros un valor nulo y actualiza con descenso gradiente durante tantos pasos como consideres necesario. Considera como <ins>learning rate 0.001</ins>. En este caso, para calcular el gradiente con el que actualizar evalúa la función de pérdida para toda la base de datos y calcula el valor de su derivada en ese punto. Para decidir cuándo parar es útil calcular la función de pérdida (MSE) en cada paso y estudiar cómo evoluciona esta a medida que actualizamos los parámetros. Puedes elegir cuándo parar según tu criterio: la función de pérdida no cambia demasiado, los parámetros se actualizan muy poquito, etc. **¿Cuántos pasos te ha llevado parar y qué criterio has elegido?** Muestra el progreso de la función de pérdida representando en el eje **X** los pasos de descenso gradiente y en el eje Y la función de pérdida en cada paso. Además, usando la misma representación que en el apartado anterior donde cada eje representa los valores de $w$ y $b$, muestra la sucesión de pasos que te llevan cada vez más cerca del óptimo. Cada paso debe ser un punto en el espacio, con coordenadas $(w, b)$. Compara todos los resultados con la solución óptima del primer apartado.
 
-$\providecommand{\dv}[2]{\frac{d#1}{d#2}}$
 **Respuesta:**
 Para realizar el descenso gradiente, comenzamos con los parámetros $w = 0$ y $b = 0$ y actualizamos en cada paso usando la regla:
 $$
 \begin{cases}
-    w = w - learning\_rate * \dv{L}{w} \\
-    b = b - learning\_rate * \dv{L}{b}
+    w = w - learning\_rate * \frac{dL}{dw} \\
+    b = b - learning\_rate * \frac{dL}{db}
 \end{cases}
 $$
 donde $\dv{L}{w}$ y $\dv{L}{b}$ son las derivadas de la función de pérdida respecto a $w$ y $b$, respectivamente.
@@ -615,7 +614,6 @@ Para entender cómo funcionan estos algoritmos a diferencia del descenso de grad
     <img src="images/image0.png">
 </p>
 
-$\providecommand{\dv}[2]{\frac{d#1}{d#2}}$
 Probablemente os preguntareis por qué entonces el descenso de gradiente toma un menor número de iteraciones que los otros dos algoritmos, Esto se debe a la **tolerancia** que estamos usando. El algoritmo espera a que **"la pelota" deje de rebotar tanto**, y se estabilice. Mientras tanto, **"la gota"**, aunque sea más lenta, una vez llega al fondo, **se estabiliza de forma casi inmediata**. Además, la efectividad de stochastic gradient (al igual que Mini-batch GD, veremos más tarde cuál es su conexión) es más visible en conjuntos de datos mucho más grandes.
 
 De la misma forma que en el anterior apartado podemos grafica la evolución de la pérdida, pesos y sesgos para cada algoritmo.
@@ -1351,11 +1349,10 @@ print(f"x opt: {x_values[-1]}\ty opt: {y_values[-1]}")
     x opt: 1.3635470418526883	y opt: -0.8437443938333351
     
 
-$\providecommand{\dv}[2]{\frac{d#1}{d#2}}$
 Para calcular los valores analítcos de $\hat{x}$ e $\hat{y}$ debemos encontrar el mínimo global de la función $f_{1}$. Para ello podemos **utilizar el gradiente y establecerlo igual a cero**.
 1. Recordamos el gradiente previamente calculado:
-$$\dv{f_{1}}{x}=2(x-3)$$
-$$\dv{f_{1}}{y}=6(y+1)$$
+$$\frac{df_{1}}{dx}=2(x-3)$$
+$$\frac{df_{1}}{dy}=6(y+1)$$
 2. Igualando a cero, tenemos:
 $$2(x-3) = 0  \rightarrow  x = 3$$
 $$6(y+1) = 0  \rightarrow  y = -1$$
@@ -1611,7 +1608,6 @@ X_test = np.load('data/X_test.npy')
 y_test = np.load('data/y_test.npy')
 ```
 
-$\providecommand{\norm}[1]{\lVert#1\rVert}$
 El objetivo de este apartado es crear un modelo SVM que empleé descenso de gradiente estocástico para encontrar el hiperplano que mejor separe el conjunto de datos por etiquetas/clases. Este modelo viene dado por la clase `StochasticGradientSVM`.
 
 Probablemente, os preguntéis **¿qué es un hiperplano?**
@@ -1630,15 +1626,15 @@ $$
 \end{cases}
 $$
 
-Otro interés a tener en cuenta es que nuestro hiperplano separase los ejemplos positivos y negativos con el mayor margen posible. ¿Por qué? Un mayor margen contribuyen a una mejor generalización para clasificar nuevos ejemplos. El margen viene dado por $\frac{2}{\norm{w}}$, donde $\norm{w}$ es la norma del vector $w$. Si tenemos en cuenta la norma euclideana, entonces $\norm{w} = \sqrt{\sum_{j=1}^{D}(w^{(j)})^{2}}$.
+Otro interés a tener en cuenta es que nuestro hiperplano separase los ejemplos positivos y negativos con el mayor margen posible. ¿Por qué? Un mayor margen contribuyen a una mejor generalización para clasificar nuevos ejemplos. El margen viene dado por $\frac{2}{\lVertw\rVert}}$, donde $\lVertw\rVert}$ es la norma del vector $w$. Si tenemos en cuenta la norma euclideana, entonces $\lVertw\rVert} = \sqrt{\sum_{j=1}^{D}(w^{(j)})^{2}}$.
 
 <p align="center">
     <!-- Ejemplo de modelo SVM en un espacio bidimensional -->
     <img src="images/image1.png">
 </p>
 
-Para **maximizar el margen**, hay, por tanto, que **minimizar la norma $\norm{w}$** obteniendo el siguiente criterio de optimización:
-$$\min{\frac{1}{2}\norm{w}^{2} \text{ t.q. } y_{i}(wx_{i} - b) \ge 1}$$
+Para **maximizar el margen**, hay, por tanto, que **minimizar la norma $\lVertw\rVert}$** obteniendo el siguiente criterio de optimización:
+$$\min{\frac{1}{2}\lVertw\rVert}^{2} \text{ t.q. } y_{i}(wx_{i} - b) \ge 1}$$
 
 A este hiperplano que mejor separa las clases (mayor margen) en un conjunto de datos se le denomina **Hiperplano de Margen Máximo**.
 
@@ -1840,7 +1836,6 @@ En `StochasticGradientSVM`, **beta y beta_0 son los parámetros del modelo que s
 
 Además, este modelo implementado tiene una serie de **nuevos hiperparámetros** que explicaremos a continuación uno a uno p.ej. $C$. Otros hiperparámetros como son **tol, regularization o learning rate**, ya deben resultaros familiares de anteriores apartados.
 
-$\providecommand{\norm}[1]{\lVert#1\rVert}$
 **Recordatorio**:
 <br>
 Para encontrar la mejor frontera se deben encontrar los parámetros $w*$ y $b*$ óptimos tal que se obtiene un modelo $f(x) = sign(w*x - b*)$. Para ello se necesita imponer unos requisitos, naturalmente:
@@ -1858,7 +1853,7 @@ Ya mencionamos que para lidiar con el ruido nuestro objetivo era **penalizar a a
 $$\max{(0, 1-y_{i}(wx_{i}-b))}$$
 Nótese que cuando las condiciones $A$ y $B$ se cumplan entonces la función valdrá 0, en caso contrario esta será proporcional a la distancia del punto con la frontera.
 
-Por tanto nuestra nueva función de cose es: $C\norm{w}^{2}+\frac{1}{N}\sum_{i=1}^{N}\max{(0, 1-y_{i}(wx_{i}-b))}$,
+Por tanto nuestra nueva función de cose es: $C\lVertw\rVert}^{2}+\frac{1}{N}\sum_{i=1}^{N}\max{(0, 1-y_{i}(wx_{i}-b))}$,
 donde **$C$ es un hiperparámetro que se obtiene mediante cross-validation**.
 
 $C$ determina la compensación entre:
