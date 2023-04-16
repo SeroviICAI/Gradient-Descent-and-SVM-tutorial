@@ -3,10 +3,11 @@
 
 ```python
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 plt.style.use('default')
+
 import numpy as np
 import pandas as pd
-
 import sympy as sp
 
 %matplotlib inline
@@ -127,6 +128,69 @@ w_, b_
 
 
 
+Para ver esto gráficamente, veamos el siguiente gráfico 3D:
+
+
+```python
+# Crear un meshgrid de pesos y sesgos
+weight_range = np.linspace(w_ - 2, w_ + 2, 100)
+bias_range = np.linspace(b_ - 2, b_ + 2, 100)
+xx, yy = np.meshgrid(weight_range, bias_range)
+
+# Calcular MSE para cada peso y sesgo
+zz = np.zeros_like(xx)
+for i in range(len(weight_range)):
+    for j in range(len(bias_range)):
+        y_pred = xx[j,i] * data['x'] + yy[j,i]
+        zz[j,i] = np.mean((data['y'] - y_pred)**2)
+
+# Calcular MSE en los valores óptimos w_, b_
+y_pred_opt = w_ * data['x'] + b_
+mse_opt = np.mean((data['y'] - y_pred_opt)**2)
+
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+
+ax.plot3D(w_, b_, mse_opt+10, color='red', marker='o')
+ax.plot_surface(xx, yy, zz, alpha=0.6, lw=0.5, rstride=8, cstride=8, cmap='viridis')
+ax.plot3D(w_, b_, 0, color='red', marker='o')
+ax.contourf(xx, yy, zz, zdir='z', offset=0, alpha=0.4, cmap='viridis')
+ax.plot3D(w_, b_ + 3, mse_opt, color='red', marker='o')
+ax.contourf(xx, yy, zz, zdir='y', offset=b_ + 3, alpha=0.4, cmap='viridis')
+
+ax.set_xlabel('Weights', fontsize=14)
+ax.set_ylabel('Biases', fontsize=14)
+ax.set(xlim=(w_ - 3, w_ + 3), ylim=(b_ - 3, b_ + 3))
+plt.show()
+```
+
+
+    
+![png](images/output_14_0.png)
+    
+
+
+El **eje Z** en este caso se trata de la **pérdida MSE**, y como se puede observar para los valores óptimos $(\hat{w}, \hat{b})$ la función de pérdida llega a su **valor mínimo**. También podemos observar esto en 2 dimensiones.
+
+
+```python
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.contourf(xx, yy, zz, levels=20)
+ax.plot(w_, b_, color='red', marker='o', label="Solución analítica")
+ax.set_xlabel('Weights', fontsize=14)
+ax.set_ylabel('Biases', fontsize=14)
+ax.set_xlim(w_ - 2, w_ + 2)
+ax.set_ylim(b_ - 2, b_ + 2)
+ax.legend()
+plt.show()
+```
+
+
+    
+![png](images/output_16_0.png)
+    
+
+
 Por lo tanto, la ecuación de la recta que mejor se ajusta a los datos es aproximádamente $y = 2.64x + 5.17$.
 
 
@@ -151,7 +215,7 @@ plt.show()
 
 
     
-![png](images/output_14_0.png)
+![png](images/output_18_0.png)
     
 
 
@@ -166,7 +230,7 @@ $$
     b = b - learning\_rate * \frac{dL}{db}
 \end{cases}
 $$
-donde $\frac{dL}{dw}$ y $\frac{dL}{db}$ son las derivadas de la función de pérdida respecto a $w$ y $b$, respectivamente.
+donde \frac{dL}{dw} y \frac{dL}{db} son las derivadas de la función de pérdida respecto a $w$ y $b$, respectivamente.
 
 Calculamos la función de pérdida MSE en cada paso para ver cómo evoluciona a medida que actualizamos los parámetros. Elegimos parar cuando la función de pérdida se estabiliza y deja de disminuir significativamente.
 
@@ -354,7 +418,7 @@ plt.show()
 
 
     
-![png](images/output_22_0.png)
+![png](images/output_26_0.png)
     
 
 
@@ -393,7 +457,42 @@ plt.show()
 
 
     
-![png](images/output_24_0.png)
+![png](images/output_28_0.png)
+    
+
+
+El progreso de la función según sus parámetros podemos observarlo en la siguiente gráfica:
+
+
+```python
+# Crear un meshgrid de pesos y sesgos
+weight_range = np.linspace(0, 5, 100)
+bias_range = np.linspace(0, 6, 100)
+xx, yy = np.meshgrid(weight_range, bias_range)
+
+# Calcular MSE para cada peso y sesgo
+zz = np.zeros_like(xx)
+for i in range(len(weight_range)):
+    for j in range(len(weight_range)):
+        y_pred = weight_range[i] * X + bias_range[j]
+        zz[j, i] = np.mean((y - y_pred)**2)
+        
+# Gráfica de evolución de pesos y sesgos
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.contourf(xx, yy, zz, levels=20)
+ax.plot(w_, b_, color='red', marker='o', label="Solución analítica")
+ax.plot(weights, biases, color='#FF7514')
+ax.set_xlabel('Weights', fontsize=14)
+ax.set_ylabel('Biases', fontsize=14)
+ax.set_xlim(0, 5)
+ax.set_ylim(0, 6)
+ax.legend()
+plt.show()
+```
+
+
+    
+![png](images/output_30_0.png)
     
 
 
@@ -644,7 +743,7 @@ plt.show()
 
 
     
-![png](images/output_36_0.png)
+![png](images/output_42_0.png)
     
 
 
@@ -679,7 +778,7 @@ plt.show()
 
 
     
-![png](images/output_37_0.png)
+![png](images/output_43_0.png)
     
 
 
@@ -714,7 +813,7 @@ plt.show()
 
 
     
-![png](images/output_38_0.png)
+![png](images/output_44_0.png)
     
 
 
@@ -792,19 +891,19 @@ for i, (axl, axw, axb) in enumerate(zip(ax1.flatten(), ax2.flatten(), ax3.flatte
 
 
     
-![png](images/output_40_0.png)
+![png](images/output_46_0.png)
     
 
 
 
     
-![png](images/output_40_1.png)
+![png](images/output_46_1.png)
     
 
 
 
     
-![png](images/output_40_2.png)
+![png](images/output_46_2.png)
     
 
 
@@ -846,7 +945,7 @@ for batch_size, ax in zip(batch_sizes, axs.flatten()):
 
 
     
-![png](images/output_42_0.png)
+![png](images/output_48_0.png)
     
 
 
@@ -859,7 +958,7 @@ La **tasa de aprendizaje** (learning rate o $\alpha$) en el descenso de gradient
 
 En Machine Learning muchas veces **dar pequeños pasos en la dirección correcta** nos lleva a obtener mejores predicciones para nuevos datos. La tasa de aprendizaje es un hiperparámetro que **escala** las contribuciones llevadas a cabo en cada contribución del algoritmo. Una mayor tasa de aprendizaje implica que el tamaño de los pasos en cada iteración aumenta.
 
-Podemos graficar cómo afecta la tasa de aprendizaje al resultado. Para visualizar mejor el resultado utilizaremos la función `stochastic_gradient_descent`. (Mejor no ejecutar la siguiente celda, puede llevar bastante tiempo. Aprox: 2min)
+Podemos graficar cómo afecta la tasa de aprendizaje al resultado. Para visualizar mejor el resultado utilizaremos la función `stochastic_gradient_descent`, así podremos observar el efecto que tiene $\alpha$ sobre el ruido en la evolución de valores. (Mejor no ejecutar la siguiente celda, puede llevar bastante tiempo. Aprox: 2min)
 
 
 ```python
@@ -900,7 +999,7 @@ plt.show()
 
 
     
-![png](images/output_46_0.png)
+![png](images/output_52_0.png)
     
 
 
@@ -934,7 +1033,7 @@ plt.show()
 
 
     
-![png](images/output_48_0.png)
+![png](images/output_54_0.png)
     
 
 
@@ -1343,10 +1442,16 @@ for i in range(30):
     grad_norms.append(np.linalg.norm(grad))
     x_values.append(x)
     y_values.append(y)
-print(f"x opt: {x_values[-1]}\ty opt: {y_values[-1]}")
+    
+print(f"x opt: {x_values[-1]}\ny opt: {y_values[-1]}\nf(x opt, y opt): {f_values[-1]}\n" \
+      f"grad: {grad}\ngrad_norm: {grad_norms[-1]}")
 ```
 
-    x opt: 1.3635470418526883	y opt: -0.8437443938333351
+    x opt: 1.3635470418526883
+    y opt: -0.8437443938333351
+    f(x opt, y opt): 2.751225727604623
+    grad: [-3.33969991  0.99737621]
+    grad_norm: 3.485449013099057
     
 
 Para calcular los valores analítcos de $\hat{x}$ e $\hat{y}$ debemos encontrar el mínimo global de la función $f_{1}$. Para ello podemos **utilizar el gradiente y establecerlo igual a cero**.
@@ -1388,7 +1493,7 @@ plt.show()
 
 
     
-![png](images/output_68_0.png)
+![png](images/output_74_0.png)
     
 
 
@@ -1425,7 +1530,9 @@ for i in range(100):
     grad_norms.append(np.linalg.norm(grad))
     x_values.append(x)
     y_values.append(y)
-print(f"x opt: {x_values[-1]}\ty opt: {y_values[-1]}")
+    
+print(f"x opt: {x_values[-1]}\ny opt: {y_values[-1]}\nf(x opt, y opt): {f_values[-1]}\n" \
+      f"grad: {grad}\ngrad_norm: {grad_norms[-1]}")
 
 # Graficamos la función f1
 x_range = np.linspace(min(x_values)-3, max(x_values)+3, 100)
@@ -1451,12 +1558,16 @@ ax.legend()
 plt.show()
 ```
 
-    x opt: 2.9873156588456142	y opt: -0.9956335825615529
+    x opt: 2.9873156588456142
+    y opt: -0.9956335825615529
+    f(x opt, y opt): 0.00021808931426116994
+    grad: [-0.02936303  0.02249947]
+    grad_norm: 0.03699207426834297
     
 
 
     
-![png](images/output_71_1.png)
+![png](images/output_77_1.png)
     
 
 
@@ -1507,11 +1618,19 @@ for i in range(100):
     grad_norms.append(np.linalg.norm(grad))
     x_values.append(x)
     y_values.append(y)
-print(f"x opt: {x_values[-1]}\ty opt: {y_values[-1]}")
+    
+print(f"x opt: {x_values[-1]}\ny opt: {y_values[-1]}\nf(x opt, y opt): {f_values[-1]}\n" \
+      f"grad: {grad}\ngrad_norm: {grad_norms[-1]}")
 ```
 
-    x opt: -3.0623184792791007	y opt: 3.9781844568872105
+    x opt: -3.0623184792791007
+    y opt: 3.9781844568872105
+    f(x opt, y opt): 0.004148242796485457
+    grad: [-0.16873247  0.27049452]
+    grad_norm: 0.318807046261994
     
+
+La función en los puntos óptimos toma un valor muy cercano a cero. Esto nos da una buena intuición que el método es correcto, ya que $f_{2}$ es una función definida positiva ya que es la suma de 2 cuadrados, y pretendemos minimizarla.
 
 
 ```python
@@ -1537,7 +1656,7 @@ plt.show()
 
 
     
-![png](images/output_75_0.png)
+![png](images/output_82_0.png)
     
 
 
@@ -1882,7 +2001,7 @@ print(f"Beta: {beta}\tBeta_0: {beta_0}")
     
 
 Los valores de $\beta$ y $\beta_0$ obtenidos son aproximadamente:
-$$\beta =\begin{pmatrix}0.0760 \\ 0.0414\end{pmatrix} \quad \beta_0: 0.0008$$
+$$\beta =\begin{pmatrix}0.3154 \\ 0.1022\end{pmatrix} \quad \beta_0: 0.0041$$
 
 Ahora veamos con qué **precisión** etiqueta el modelo los datos de validación, con el hiperplano hallado.
 
@@ -1937,7 +2056,7 @@ plt.show()
 
 
     
-![png](images/output_93_0.png)
+![png](images/output_100_0.png)
     
 
 
@@ -1964,11 +2083,11 @@ plt.show()
 
 
     
-![png](images/output_95_0.png)
+![png](images/output_102_0.png)
     
 
 
-Como se menciono anteriormente, el modelo clasifica perfectamente los puntos de `X_test`.
+Como se puede observar en la figura, el modelo también clasifica perfectamente los puntos de `X_test`.
 
 Por último observemos cómo variar el hiperparámetro $C$ afecta a la clasificación del modelo (sobre el conjunto de entrenamiento). Para ello generaremos un nuevo conjunto de datos más ruidoso, donde no exista una frontera que separe el conjunto de entrenamiento con precisión perfecta.
 
@@ -2051,7 +2170,7 @@ plt.show()
 
 
     
-![png](images/output_98_1.png)
+![png](images/output_105_1.png)
     
 
 
@@ -2419,7 +2538,7 @@ plt.show()
 
 
     
-![png](images/output_103_1.png)
+![png](images/output_110_1.png)
     
 
 
